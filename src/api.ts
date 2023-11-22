@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { getAccount } from './GetAccount';
-import { signup } from './Signup';
+import GetAccount from './GetAccount';
+import Signup from './Signup';
 
 const app = express();
 app.use(express.json());
@@ -8,7 +8,8 @@ app.use(express.json());
 app.post('/signup', async function (req: Request, res: Response) {
 	try {
 		const input = req.body;
-		const result = signup(input);
+		const signup = new Signup();
+		const result = await signup.execute(input);
 		res.json(result);
 	} catch (error: any) {
 		res.status(422).json({ message: error.message });
@@ -18,7 +19,8 @@ app.post('/signup', async function (req: Request, res: Response) {
 app.get('/accounts/:accountId', async (req: Request, res: Response) => {
 	try {
 		const accountId = req.params.accountId;
-		const account = await getAccount(accountId);
+		const getAccount = new GetAccount();
+		const account = await getAccount.execute(accountId);
 		res.json(account);
 	} catch (error: any) {
 		res.status(400).json({ message: error.message });
