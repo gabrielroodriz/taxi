@@ -1,3 +1,0 @@
-enum Status {
-    REQUESTED = 'requested',
-}
