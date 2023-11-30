@@ -9,6 +9,6 @@ services:
 
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: 'password'
       POSTGRES_DB: app
 
