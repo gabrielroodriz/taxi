@@ -1,3 +1,3 @@
 export default interface GetAccountAccountDAO {
-	getById (accountId: string, flag: boolean): Promise<any>;
+	getById (accountId: string): Promise<any>;
 }

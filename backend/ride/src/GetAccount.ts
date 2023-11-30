@@ -1,4 +1,3 @@
-import AccountDAO from "./AccountDAODatabase";
 import GetAccountAccountDAO from "./GetAccountAccountDAO";
 
 export default class GetAccount {
@@ -7,7 +6,7 @@ export default class GetAccount {
 	}
 	
 	async execute (accountId: string) {
-		const account = await this.accountDAO.getById(accountId, true);
+		const account = await this.accountDAO.getById(accountId);
 		return account;
 	}
 }
