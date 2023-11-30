@@ -44,6 +44,16 @@ test("Deve solicitar uma corrida", async function () {
 	expect(outputGetRide.status).toBe('requested');
 });
 
+test("Não Deve poder solicitar uma corrida se a conta não existir", async function () {
+	const inputRequestRide = {
+		passengerId: "efcd6a98-72f5-4823-b985-786ffe185459",
+		fromLat: -27.584905257808835,
+		fromLong: -48.545022195325124,
+		toLat: -27.496887588317275,
+		toLong: -48.522234807851476
+	};
+	await expect(() => requestRide.execute(inputRequestRide)).rejects.toThrow(new Error("Account does not exist"));
+});
 test("Não Deve poder solicitar uma corrida se a conta for de passageiro", async function () {
 	const inputSignup = {
 		name: "John Doe",

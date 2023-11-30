@@ -11,6 +11,7 @@ export default class RequestRide {
 	async execute (input: any) {
 		this.logger.log(`requestRide`);
 		const account = await this.accountDAO.getById(input.passengerId);
+		if(!account) throw new Error("Account does not exist");
 		const accountActiveRide = await this.rideDAO.getActiveRideByPassengerId(input.passengerId);
 		if(!account.is_passenger) throw new Error("Only passengers can request a ride");
 		if(accountActiveRide) throw new Error("Passenger already has an active ride");
