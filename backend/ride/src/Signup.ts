@@ -1,38 +1,26 @@
-import crypto from "crypto";
-import AccountDAO from "./AccountDAO";
-import { validateCpf } from "./CpfValidator";
-import Logger from "./Logger";
-import SignupAccountDAO from "./SignupAccountDAO";
+import Account from './Account';
+import Logger from './Logger';
+import SignupAccountDAO from './SignupAccountDAO';
 
 export default class Signup {
+	constructor(private accountDAO: SignupAccountDAO, private logger: Logger) {}
 
-	constructor (private accountDAO: SignupAccountDAO, private logger: Logger) {
-	}
-
-	async execute (input: any) {
+	async execute(input: any) {
 		this.logger.log(`signup ${input.name}`);
-		input.accountId = crypto.randomUUID();
-		const account = await this.accountDAO.getByEmail(input.email);
-		if (account) throw new Error("Duplicated account");
-		if (this.isInvalidName(input.name)) throw new Error("Invalid name");
-		if (this.isInvalidEmail(input.email)) throw new Error("Invalid email");
-		if (!validateCpf(input.cpf)) throw new Error("Invalid cpf");
-		if (input.isDriver && this.isInvalidCarPlate(input.carPlate)) throw new Error("Invalid car plate");
-		await this.accountDAO.save(input);
-		return {
-			accountId: input.accountId
-		};
-	}
 
-	isInvalidName (name: string) {
-		return !name.match(/[a-zA-Z] [a-zA-Z]+/);
-	}
-	
-	isInvalidEmail (email: string) {
-		return !email.match(/^(.+)@(.+)$/);
-	}
-	
-	isInvalidCarPlate (carPlate: string) {
-		return !carPlate.match(/[A-Z]{3}[0-9]{4}/);
+		const existingAccount = await this.accountDAO.getByEmail(input.email);
+		if (existingAccount) throw new Error('Duplicated account');
+		const account = new Account(
+			input.name,
+			input.email,
+			input.cpf,
+			input.carPlate,
+			input.isPassenger,
+			input.isDriver,
+		);
+		await this.accountDAO.save(account);
+		return {
+			accountId: account.accountId,
+		};
 	}
 }
