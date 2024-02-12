@@ -1,6 +1,7 @@
 import sinon from 'sinon';
-import AccountDAO from '../src/AccountDAO';
-import AccountDAODatabase from '../src/AccountDAODatabase';
+import Account from '../src/Account';
+import AccountDAO from '../src/AccountRepository';
+import AccountDAODatabase from '../src/AccountRepositoryDatabase';
 import GetAccount from '../src/GetAccount';
 import Logger from '../src/Logger';
 import LoggerConsole from '../src/LoggerConsole';
@@ -39,7 +40,7 @@ test('Deve criar uma conta para o passageiro com stub', async function () {
 		.resolves();
 	const stubAccountDAOGetByEmail = sinon
 		.stub(AccountDAODatabase.prototype, 'getByEmail')
-		.resolves(null);
+		.resolves(undefined);
 	const inputSignup = {
 		name: 'John Doe',
 		email: `john.doe${Math.random()}@gmail.com`,
@@ -51,7 +52,16 @@ test('Deve criar uma conta para o passageiro com stub', async function () {
 	expect(outputSignup.accountId).toBeDefined();
 	const stubAccountDAOGetById = sinon
 		.stub(AccountDAODatabase.prototype, 'getById')
-		.resolves(inputSignup);
+		.resolves(
+			Account.create(
+				inputSignup.name,
+				inputSignup.email,
+				inputSignup.cpf,
+				'',
+				true,
+				false,
+			),
+		);
 	const outputGetAccount = await getAccount.execute(outputSignup.accountId);
 	// then
 	expect(outputGetAccount.name).toBe(inputSignup.name);
